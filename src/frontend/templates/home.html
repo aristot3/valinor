@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valinor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+</head>
+<body>
+    <div id="loadingScreen">
+        <img src="img/temp_logo.png" alt="Logo">
+    </div>
+    <div id="navbar">
+        <div style="display: flex; align-items: center;">
+            <img src="img/temp_logo.png" alt="Logo" style="height: 60px;">
+            <div id="logo-title">Valinor</div>
+        </div>
+        <ul>
+            <li><a href="#">Alerts</a></li>
+            <li><a href="#">Analysis</a></li>
+            <li><a href="#">Storage status</a></li>
+            <li><span class="username">Username</span></li>
+        </ul>
+    </div>
+    <div id="content">
+        <h1>Welcome to Valinor</h1>
+        <p>Here, in the undying lands, beauty and peace reign supreme. Your files find refuge in the land of the Valar.</p>
+    </div>
+    <div id="content-files">
+        <h1>Derniers fichiers analysés</h1>
+        <div class="search-container">
+            <input class="search-bar" type="text" id="searchBar" placeholder="Rechercher...">
+        </div>
+        <table id="fileTable">
+            <tr>
+                <th>Source sequester</th>
+                <th>Timestamp</th>
+                <th>User</th>
+                <th>File name</th>
+                <th>File type</th>
+                <th>File hash</th>
+                <th>Alerts</th>
+            </tr>
+            <tr class="nth-child">
+                <th>Prints</th>
+                <th>08-08-2023 16:30:26</th>
+                <th>user1</th>
+                <th>gerard_le_canard.pdf</th>
+                <th>PDF</th>
+                <th>ae8adb3bab804d7926396e142638ce24</th>
+                <th>Sensible keywords detected : ["keyword1", "keyword2"] </th>
+            </tr>
+        </table>
+    </div>
+    <script>
+        // TODO : do this on server side, this is just a mock
+        document.getElementById('searchBar').addEventListener('keyup', (e) => {
+            const searchString = e.target.value.toLowerCase();
+            const rows = document.getElementById('fileTable').querySelectorAll('tr');
+            for (let i = 1; i < rows.length; i++) {
+                const cols = rows[i].querySelectorAll('td');
+                let text = '';
+                for (let j = 0; j < cols.length; j++) {
+                    text += cols[j].textContent.toLowerCase() + ' ';
+                }
+                rows[i].style.display = text.includes(searchString) ? '' : 'none';
+            }
+        });
+    </script>
+    <script>
+        window.addEventListener('load', function() {
+            const loadingScreen = document.getElementById('loadingScreen');
+            
+            if (localStorage.getItem('hasVisitedBefore')) {
+                loadingScreen.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            } else {
+                setTimeout(function() {
+                    loadingScreen.style.transition = 'opacity 1s ease-out';
+                    loadingScreen.style.opacity = '0';
+                    setTimeout(function() {
+                        loadingScreen.style.display = 'none';
+                        document.body.style.overflow = 'auto';
+                    }, 1000); 
+                }, 500);
+                localStorage.setItem('hasVisitedBefore', true);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+###################### LOGGING CONFIGURATION #####################
+# Path to the log file.
+log_file: "/var/log/valinor/valinor.json.log"
+
+# Logging level can be: TRACE, DEBUG, INFO, WARN, ERROR.
+log_level: INFO
+##################################################################
+
+###################### CORE CONFIGURATION ########################
+# Path to the folder containing sequestered files to analyze
+sequester_path: /home/user/valinor/bench
+##################################################################
