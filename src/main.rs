@@ -11,6 +11,7 @@ use internals::folder_processing;
 use tokio::time::Duration;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
+use std::env;
 
 extern crate ctrlc;
 
@@ -23,8 +24,18 @@ struct Config {
 
 #[actix_web::main]
 async fn main() {
-    let config_yaml = fs::read_to_string("valinor.yaml").expect("Failed to read valinor.yaml");
-    let config: Config = serde_yaml::from_str(&config_yaml).expect("Failed to parse YAML");
+    let args: Vec<String> = env::args().collect();
+    let config_path;
+
+    if args.len() > 2 && &args[1] == "-f" {
+        config_path = &args[2];
+    } else {
+        eprintln!("Error: The '-f' argument followed by the configuration file path is required.");
+        return;
+    }
+
+    let config_yaml = fs::read_to_string(config_path).expect("Failed to read the configuration file");
+    let config: Config = serde_yaml::from_str(&config_yaml).expect("Failed to parse YAML in the configuration file");
 
     let logger = logger::JsonLogger::new(&config.log_file, None);
     let leaked_logger = Box::leak(Box::new(logger));
@@ -36,7 +47,7 @@ async fn main() {
         "info" => LevelFilter::Info,
         "debug" => LevelFilter::Debug,
         "trace" => LevelFilter::Trace,
-        _ => LevelFilter::Info,  // Default to 'Info' 
+        _ => LevelFilter::Info,
     };
     log::set_max_level(level_filter);
 

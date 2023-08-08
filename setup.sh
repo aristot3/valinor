@@ -8,6 +8,20 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
+# Check if git is installed and install if not present
+if ! command -v git &> /dev/null; then
+    echo "git is not installed. Installing now..."
+    apt-get update
+    apt-get install -y git
+fi
+
+# Check if curl is installed and install if not present
+if ! command -v curl &> /dev/null; then
+    echo "curl is not installed. Installing now..."
+    apt-get update
+    apt-get install -y curl
+fi
+
 # Install Rust if not present
 if ! command -v rustc &> /dev/null; then
     echo "Rust is not installed. Installing now..."
@@ -15,6 +29,14 @@ if ! command -v rustc &> /dev/null; then
     source $HOME/.cargo/env
 else
     echo "Rust is already installed."
+fi
+
+# Install build-essential if not present
+if ! dpkg -l | grep -q build-essential; then
+    echo "Installing build-essential..."
+    apt-get install -y build-essential
+else
+    echo "build-essential is already installed."
 fi
 
 # Compile valinor binary
@@ -63,8 +85,7 @@ if [[ ! -d $CONFIG_DIR ]]; then
 fi
 
 if [[ ! -f $CONFIG_FILE ]]; then
-    touch $CONFIG_FILE
-    echo "# Configuration for Valinor" > $CONFIG_FILE
+    cp valinor.yaml $CONFIG_DIR/
 else
     echo "Configuration file $CONFIG_FILE already exists."
 fi
@@ -83,7 +104,7 @@ After=network.target
 Type=simple
 User=$SERVICE_NAME
 Group=$SERVICE_NAME
-ExecStart=$BINARY_PATH
+ExecStart=$BINARY_PATH -f $CONFIG_FILE
 Restart=always
 RestartSec=5
 
@@ -100,4 +121,4 @@ else
 fi
 
 # Display a success message
-echo "Configuration of Rust, user, group, logs, config file, and systemd service for $SERVICE_NAME is complete."
+echo "Configuration of curl, git, Rust, build-essential, user, group, logs, config file, and systemd service for $SERVICE_NAME is complete."
