@@ -52,7 +52,7 @@ Built with Rust, this project aims to provide optimal performance while staying 
 1. Clone the repository:
 
 ```bash
-git clone [repository_link] && cd valinor
+git clone https://github.com/aristot3/valinor/ && cd valinor
 chmod +x ./setup.sh
 sudo ./setup.sh
 ```
