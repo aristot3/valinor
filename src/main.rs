@@ -1,6 +1,7 @@
 mod utils;
 mod frontend;
 mod internals;
+mod parsers;
 
 use utils::logger;
 use frontend::server;
